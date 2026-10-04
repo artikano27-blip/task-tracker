@@ -1,1 +1,21 @@
+# Настройки IDE PyCharm
+.idea/
+
+# Переменные окружения и секреты
 .env
+*.env
+
+# Виртуальное окружение
+.venv/
+venv/
+ENV/
+
+# Кэш Python и байткод
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Дистрибутивы и сборка
+build/
+dist/
+*.egg-info/
