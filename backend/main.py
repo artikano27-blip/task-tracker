@@ -1,6 +1,10 @@
 from fastapi import FastAPI
 
-app = FastAPI()
+from core.exception_handlers import register_exception_handlers
+
+app = FastAPI(title="Task Tracker")
+
+register_exception_handlers(app)
 
 
 @app.get("/")
