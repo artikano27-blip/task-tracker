@@ -1,3 +1,5 @@
+import uuid
+
 from fastapi import status
 
 class AppException(Exception):
@@ -5,9 +7,10 @@ class AppException(Exception):
     message: str = "Внутренняя ошибка сервера"
     code: str = "INTERNAL_ERROR"
 
-    def __init__(self, message: str | None = None):
+    def __init__(self, message: str | None = None, **kwargs):
         if message:
             self.message = message
+        self.extra = kwargs
         super().__init__(self.message)
 
 
@@ -32,6 +35,11 @@ class InvalidTokenError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
     message = "Ошибка сервиса аутентификации: неверный токен"
     code = "INVALID_TOKEN"
+
+class TokenCompromisedError(AppException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    message = "Ошибка сервиса аутентификации: Сеанс истек или стал недействительным. Пожалуйста, войдите в систему снова. "
+    code = "TOKEN_COMPROMISED"
 
 
 class ExpiredTokenError(AppException):
