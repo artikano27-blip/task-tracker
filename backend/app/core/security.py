@@ -7,7 +7,7 @@ from core.config import settings
 from core.exceptions import ExpiredTokenError, InvalidTokenError
 
 
-def create_token(data: dict, token_type: str, expires_delta: timedelta | None = None) -> str:
+def create_token(data: dict, token_type: str, expires_delta: timedelta | None = None, jti: str | None = None) -> str:
     if expires_delta is None:
         expires_delta = (
             timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -15,6 +15,8 @@ def create_token(data: dict, token_type: str, expires_delta: timedelta | None = 
             else timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
         )
     to_encode = data.copy()
+    if jti:
+        to_encode["jti"] = jti
     expire = datetime.now(timezone.utc) + expires_delta
     to_encode.update({"exp": expire, "type": token_type})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
@@ -25,11 +27,14 @@ def create_access_token(user_id: uuid.UUID) -> str:
         token_type="access"
     )
 
-def create_refresh_token(user_id: uuid.UUID) -> str:
-    return create_token(
+def create_refresh_token(user_id: uuid.UUID) -> tuple[str,str]:
+    jti = str(uuid.uuid4())
+    refresh_token = create_token(
         data={"sub": str(user_id)},
-        token_type="refresh"
+        token_type="refresh",
+        jti= jti,
     )
+    return refresh_token,jti
 
 def hash_password(password: str) -> str:
     pwd_bytes = password.encode("utf-8")

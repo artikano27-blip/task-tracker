@@ -5,12 +5,10 @@ from core.config import settings
 pool = ConnectionPool(
     host=settings.REDIS_HOST,
     port=settings.REDIS_PORT,
-    decode_responses=True
+    decode_responses=True,
 )
+redis_client = Redis(connection_pool=pool)
 
-async def get_redis() -> AsyncGenerator[Redis, None]:
-    client = Redis(connection_pool=pool)
-    try:
-        yield client
-    finally:
-        await client.aclose()
+
+def get_redis() -> Redis:
+    return redis_client
