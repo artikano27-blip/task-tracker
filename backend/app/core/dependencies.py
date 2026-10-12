@@ -6,10 +6,10 @@ from redis import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 
-from core.database import get_db
-from core.exceptions import UnsupportedMediaTypeError, InvalidTokenError
-from core.redis import get_redis
-from core.security import decode_token
+from app.core.database import get_db
+from app.core.exceptions import UnsupportedMediaTypeError, InvalidTokenError
+from app.core.redis import get_redis
+from app.core.security import decode_token
 from models import User
 from repositories.user_repository import UserRepository
 from schemas import UserCreate

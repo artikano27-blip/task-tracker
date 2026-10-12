@@ -1,6 +1,6 @@
 from typing import AsyncGenerator
 from redis.asyncio import ConnectionPool, Redis
-from core.config import settings
+from app.core.config import settings
 
 pool = ConnectionPool(
     host=settings.REDIS_HOST,

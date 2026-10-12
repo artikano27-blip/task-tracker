@@ -1,4 +1,3 @@
-import uuid
 
 from fastapi import status
 
@@ -38,7 +37,7 @@ class InvalidTokenError(AppException):
 
 class TokenCompromisedError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    message = "Ошибка сервиса аутентификации: Сеанс истек или стал недействительным. Пожалуйста, войдите в систему снова. "
+    message = "Ошибка сервиса аутентификации: Сеанс истек или стал недействительным. Пожалуйста, войдите в систему снова."
     code = "TOKEN_COMPROMISED"
 
 

@@ -6,10 +6,10 @@ from datetime import datetime, timezone, timedelta
 from pydantic import ValidationError
 from redis.asyncio import Redis
 
-from core.config import settings
-from core.exceptions import UserAlreadyExistsError, UserEmailAlreadyExistsError, \
+from app.core.config import settings
+from app.core.exceptions import UserAlreadyExistsError, UserEmailAlreadyExistsError, \
     InvalidCredentialsError, InvalidTokenError, TokenCompromisedError
-from core.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
+from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
 from models import User
 from repositories.user_repository import UserRepository
 from schemas import UserCreate
