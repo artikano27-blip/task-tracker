@@ -2,11 +2,10 @@ from typing import Annotated
 from fastapi import APIRouter, Response
 from fastapi.params import Depends
 
-from core.cookie import set_auth_cookies, delete_auth_cookies
-from core.dependencies import get_auth_service, get_body, get_current_user, get_refresh_token
+from app.core.cookie import set_auth_cookies, delete_auth_cookies
+from app.core.dependencies import get_auth_service, get_body, get_current_user, get_refresh_token
 from models import User
 from schemas import UserCreate, UserResponse
-from schemas.token import TokenResponse, RefreshTokenRequest
 from schemas.user import UserLogin
 from services.auth_service import AuthService
 

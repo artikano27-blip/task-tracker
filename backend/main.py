@@ -2,9 +2,9 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-
-from core.exception_handlers import register_exception_handlers
-from core.redis import redis_client
+from app.routers.auth import router as auth_router
+from app.core.exception_handlers import register_exception_handlers
+from app.core.redis import redis_client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,10 +15,8 @@ async def lifespan(app: FastAPI):
     yield
     await redis_client.aclose()
 app = FastAPI(title="Task Tracker", lifespan=lifespan)
-
+app.include_router(auth_router)
 register_exception_handlers(app)
-
-
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
