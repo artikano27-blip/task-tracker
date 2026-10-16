@@ -10,11 +10,11 @@ from app.core.config import settings
 from app.core.exceptions import UserAlreadyExistsError, UserEmailAlreadyExistsError, \
     InvalidCredentialsError, InvalidTokenError, TokenCompromisedError
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
-from models import User
-from repositories.user_repository import UserRepository
-from schemas import UserCreate
-from schemas.token import TokenResponse, TokenPayload, SessionData
-from schemas.user import UserLogin
+from app.models import User
+from app.repositories.user_repository import UserRepository
+from app.schemas import UserCreate
+from app.schemas.token import TokenResponse, TokenPayload, SessionData
+from app.schemas.user import UserLogin
 
 @dataclass
 class AuthResult:

@@ -6,13 +6,13 @@ from unittest.mock import MagicMock, AsyncMock, ANY
 import pytest
 
 from app.core.exceptions import TokenCompromisedError, InvalidTokenError
-from core.exceptions import UserAlreadyExistsError, UserEmailAlreadyExistsError, InvalidCredentialsError
-from core.security import hash_password
-from models import User
-from schemas import UserCreate
-from schemas.token import SessionData, TokenPayload
-from schemas.user import UserLogin
-from services.auth_service import AuthResult
+from app.core.exceptions import UserAlreadyExistsError, UserEmailAlreadyExistsError, InvalidCredentialsError
+from app.core.security import hash_password
+from app.models import User
+from app.schemas import UserCreate
+from app.schemas.token import SessionData, TokenPayload
+from app.schemas.user import UserLogin
+from app.services.auth_service import AuthResult
 
 
 @pytest.mark.asyncio
