@@ -4,11 +4,11 @@ from unittest.mock import AsyncMock
 
 import pytest
 from app.core.exceptions import TokenCompromisedError
-from models import User
-from schemas import UserCreate
-from schemas.token import TokenResponse
-from schemas.user import UserLogin
-from services.auth_service import AuthResult
+from app.models import User
+from app.schemas import UserCreate
+from app.schemas.token import TokenResponse
+from app.schemas.user import UserLogin
+from app.services.auth_service import AuthResult
 
 
 @pytest.mark.asyncio

@@ -1,19 +1,15 @@
-import uuid
-from typing import Annotated
 
+from typing import Annotated
 from fastapi.params import Depends, Cookie
 from redis import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
-
 from app.core.database import get_db
 from app.core.exceptions import UnsupportedMediaTypeError, InvalidTokenError
 from app.core.redis import get_redis
-from app.core.security import decode_token
-from models import User
-from repositories.user_repository import UserRepository
-from schemas import UserCreate
-from services.auth_service import AuthService
+from app.models import User
+from app.repositories.user_repository import UserRepository
+from app.services.auth_service import AuthService
 
 
 async def get_auth_service(

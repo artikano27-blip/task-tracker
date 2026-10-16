@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models import User
+from app.models import User
 
 
 class UserRepository:

@@ -4,10 +4,10 @@ from fastapi.params import Depends
 
 from app.core.cookie import set_auth_cookies, delete_auth_cookies
 from app.core.dependencies import get_auth_service, get_body, get_current_user, get_refresh_token
-from models import User
-from schemas import UserCreate, UserResponse
-from schemas.user import UserLogin
-from services.auth_service import AuthService
+from app.models import User
+from app.schemas import UserCreate, UserResponse
+from app.schemas.user import UserLogin
+from app.services.auth_service import AuthService
 
 router = APIRouter(prefix="/auth", tags=["Аутентификация"])
 
