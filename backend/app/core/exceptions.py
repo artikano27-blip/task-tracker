@@ -15,44 +15,50 @@ class AppException(Exception):
 
 class UserAlreadyExistsError(AppException):
     status_code = status.HTTP_409_CONFLICT
-    message = "Ошибка сервиса аутентификации: пользователь с таким именем уже существует."
+    message = "Auth Service Error: пользователь с таким именем уже существует."
     code = "USER_ALREADY_EXISTS"
 
 class UserEmailAlreadyExistsError(AppException):
     status_code = status.HTTP_409_CONFLICT
-    message = "Ошибка сервиса аутентификации: пользователь с таким email уже существует."
+    message = "Auth Service Error: пользователь с таким email уже существует."
     code = "USER_EMAIL_ALREADY_EXISTS"
 
 
 class InvalidCredentialsError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    message = "Ошибка сервиса аутентификации: неверное имя пользователя или пароль."
+    message = "Auth Service Error: неверное имя пользователя или пароль."
     code = "INVALID_CREDENTIALS"
 
 
 class InvalidTokenError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    message = "Ошибка сервиса аутентификации: неверный токен"
+    message = "Auth Service Error: неверный токен"
     code = "INVALID_TOKEN"
 
 class TokenCompromisedError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    message = "Ошибка сервиса аутентификации: Сеанс истек или стал недействительным. Пожалуйста, войдите в систему снова."
+    message = "Auth Service Error: Сеанс истек или стал недействительным. Пожалуйста, войдите в систему снова."
     code = "TOKEN_COMPROMISED"
 
 
 class ExpiredTokenError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
-    message = "Ошибка сервиса аутентификации: токен просрочен"
+    message = "Auth Service Error: токен просрочен"
     code = "TOKEN_EXPIRED"
 
 class UnsupportedMediaTypeError(AppException):
     status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
-    message = "Ошибка сервиса аутентификации: неподдерживаемый формат данных"
+    message = "Auth Service Error: неподдерживаемый формат данных"
     code = "UNSUPPORTED_MEDIA_TYPE"
 
+class TaskNotFoundError(AppException):
+    status_code = status.HTTP_404_NOT_FOUND
+    message = "Task Service Error: задача не найдена"
+    code = "TASK_NOT_FOUND"
 
-
+class TaskAccessDeniedError(AppException):
+    status_code = status.HTTP_403_FORBIDDEN
+    message = "Task Service Error: доступ к ресурсу запрещен"
 
 
 
