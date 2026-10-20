@@ -8,8 +8,10 @@ from app.core.database import get_db
 from app.core.exceptions import UnsupportedMediaTypeError, InvalidTokenError
 from app.core.redis import get_redis
 from app.models import User
+from app.repositories.task_repository import TaskRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
+from app.services.task_service import TaskService
 
 
 async def get_auth_service(
@@ -18,6 +20,15 @@ async def get_auth_service(
 ) -> AuthService:
     user_repo = UserRepository(db)
     return AuthService(user_repo, redis)
+
+async def get_task_service(
+        db: Annotated[AsyncSession, Depends(get_db)]
+) -> TaskService:
+    task_repo = TaskRepository(db)
+    return TaskService(task_repo)
+
+
+
 
 
 def get_body(schema):
