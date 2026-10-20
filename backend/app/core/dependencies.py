@@ -1,6 +1,7 @@
 
 from typing import Annotated
 from fastapi.params import Depends, Cookie
+from fastapi.security import APIKeyCookie
 from redis import Redis
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
@@ -13,6 +14,7 @@ from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
 from app.services.task_service import TaskService
 
+cookie_scheme = APIKeyCookie(name="access_token", auto_error=False)
 
 async def get_auth_service(
         db: Annotated[AsyncSession, Depends(get_db)],
@@ -47,7 +49,7 @@ def get_body(schema):
 
 async def get_current_user(
         auth_service: Annotated[AuthService, Depends(get_auth_service)],
-        access_token: Annotated[str | None, Cookie()] = None,
+        access_token: Annotated[str | None, Depends(cookie_scheme)],
 ) -> User:
     if not access_token:
         raise InvalidTokenError
