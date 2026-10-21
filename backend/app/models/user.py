@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from app.models import Task
+    from app.models import Task, Column
 
 import uuid
 from datetime import datetime
@@ -24,3 +24,4 @@ class User(Base):
         server_default=func.now())
 
     tasks: Mapped[list["Task"]] = relationship(back_populates="author")
+    columns: Mapped[list["Column"]] = relationship(back_populates="user")
