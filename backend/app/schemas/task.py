@@ -12,17 +12,18 @@ class TaskBase(BaseModel):
     main_text: str
 
 class TaskCreate(TaskBase):
-    pass
+    column_id : uuid.UUID
 
 class TaskUpdate(BaseModel):
     label_text: str | None = None
     main_text: str | None = None
-    status: TaskStatus | None = None
+    column_id: uuid.UUID | None = None
+    position: int | None = None
 
 class TaskResponse(TaskBase):
     id: uuid.UUID
     timestamp: datetime.datetime
     author: UserShortResponse
-    status: TaskStatus
-
+    column_id: uuid.UUID
+    position: int
     model_config = ConfigDict(from_attributes=True)
