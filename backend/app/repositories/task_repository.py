@@ -1,7 +1,7 @@
 import uuid
 from typing import Sequence
 
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Task
@@ -18,12 +18,17 @@ class TaskRepository:
         return result.scalar_one_or_none()
 
     async def get_all_by_author(self,author_id:uuid.UUID) -> Sequence[Task]:
-        query = select(Task).where(Task.author_id == author_id).order_by(Task.timestamp.desc())
+        query = select(Task).where(Task.author_id == author_id).order_by(Task.position.desc())
         result = await self.db.execute(query)
         return result.scalars().all()
 
-    async def create(self, author_id: uuid.UUID, task_in: TaskCreate) -> Task:
-        task = Task(author_id=author_id, label_text=task_in.label_text, main_text=task_in.main_text)
+    async def get_max_position(self,column_id: uuid.UUID) -> int | None:
+        query = select(func.max(Task.position)).where(Task.column_id == column_id)
+        result = await self.db.execute(query)
+        return result.scalar_one_or_none()
+
+    async def create(self, author_id: uuid.UUID, position: int, task_in: TaskCreate) -> Task:
+        task = Task(author_id=author_id, label_text=task_in.label_text, main_text=task_in.main_text, column_id=task_in.column_id, position=position)
         self.db.add(task)
         await self.db.commit()
         await self.db.refresh(task)
