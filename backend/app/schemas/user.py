@@ -20,3 +20,9 @@ class UserResponse(UserBase):
     created_at: datetime.datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+class UserShortResponse(BaseModel):
+    id: uuid.UUID
+    username: str
+
+    model_config = ConfigDict(from_attributes=True)

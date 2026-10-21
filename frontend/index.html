@@ -3,100 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аутентификация</title>
+    <title>Менеджер задач</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light d-flex align-items-center min-vh-100">
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-12 col-sm-8 col-md-6 col-lg-4">
+<body class="bg-light">
 
-            <div id="auth-view" class="card shadow-sm app-view">
-                <div class="card-body p-4">
+    <!-- 1. Навигационная панель (видна только авторизованным) -->
+    <nav id="app-navbar" class="navbar navbar-expand navbar-light bg-white border-bottom shadow-sm d-none mb-4">
+        <div class="container">
+            <span class="navbar-brand fw-bold mb-0">Менеджер задач 📝</span>
 
-                    <!-- Переключатель вкладок -->
-                    <ul class="nav nav-pills nav-justified mb-3" id="authTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="login-tab" data-bs-toggle="pill"
-                                    data-bs-target="#login-pane" type="button" role="tab">Вход
-                            </button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="register-tab" data-bs-toggle="pill"
-                                    data-bs-target="#register-pane" type="button" role="tab">Регистрация
-                            </button>
-                        </li>
-                    </ul>
-
-                    <!-- Контейнер для сообщений об ошибках/успехе -->
-                    <div id="auth-alert" class="alert d-none" role="alert"></div>
-
-                    <!-- Содержимое вкладок (формы) -->
-                    <div class="tab-content" id="authTabContent">
-                        <!-- Форма входа -->
-                        <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
-                            <form id="login-form">
-                                <div class="mb-3">
-                                    <label for="login-username" class="form-label">Имя пользователя</label>
-                                    <input type="text" class="form-control" id="login-username" required
-                                           autocomplete="username">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="login-password" class="form-label">Пароль</label>
-                                    <input type="password" class="form-control" id="login-password" required
-                                           autocomplete="current-password">
-                                </div>
-                                <button type="submit" class="btn btn-primary w-100">Войти</button>
-                            </form>
-                        </div>
-
-                        <!-- Форма регистрации -->
-                        <div class="tab-pane fade" id="register-pane" role="tabpanel">
-                            <form id="register-form">
-                                <div class="mb-3">
-                                    <label for="reg-username" class="form-label">Имя пользователя</label>
-                                    <input type="text" class="form-control" id="reg-username" required
-                                           autocomplete="username">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="reg-email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="reg-email" required
-                                           autocomplete="email">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="reg-password" class="form-label">Пароль</label>
-                                    <input type="password" class="form-control" id="reg-password" required
-                                           autocomplete="new-password">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="reg-confirm-password" class="form-label">Проверка пароля</label>
-                                    <input type="password" class="form-control" id="reg-confirm-password" required
-                                           autocomplete="new-password">
-                                </div>
-                                <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <span class="text-secondary">
+                    Пользователь: <strong id="current-username" class="text-dark"></strong>
+                </span>
+                <button id="logout-btn" class="btn btn-outline-danger btn-sm">
+                    Выйти
+                </button>
             </div>
-            <!-- Карточка авторизованного пользователя -->
-            <div id="profile-view" class="card shadow-sm d-none app-view">
-                <div class="card-body p-4 text-center">
-                    <h4 class="card-title mb-3">Добро пожаловать, <span id="current-username"></span>! 👋
-                    </h4>
-                    <p class="text-muted">Вы успешно вошли в систему.</p>
-                    <button id="logout-btn" class="btn btn-outline-danger w-100">Выйти</button>
+        </div>
+    </nav>
+
+    <!-- 2. Экран авторизации (по центру экрана на всю высоту окна) -->
+    <div id="auth-view" class="container app-view">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-12 col-sm-8 col-md-6 col-lg-5">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+
+                        <!-- Переключатель вкладок -->
+                        <ul class="nav nav-pills nav-justified mb-3" id="authTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="login-tab" data-bs-toggle="pill"
+                                        data-bs-target="#login-pane" type="button" role="tab">Вход
+                                </button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="register-tab" data-bs-toggle="pill"
+                                        data-bs-target="#register-pane" type="button" role="tab">Регистрация
+                                </button>
+                            </li>
+                        </ul>
+
+                        <!-- Сообщения об ошибках / успехе -->
+                        <div id="auth-alert" class="alert d-none" role="alert"></div>
+
+                        <!-- Содержимое вкладок -->
+                        <div class="tab-content" id="authTabContent">
+                            <!-- Форма входа -->
+                            <div class="tab-pane fade show active" id="login-pane" role="tabpanel">
+                                <form id="login-form">
+                                    <div class="mb-3">
+                                        <label for="login-username" class="form-label">Имя пользователя</label>
+                                        <input type="text" class="form-control" id="login-username" required
+                                               autocomplete="username">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="login-password" class="form-label">Пароль</label>
+                                        <input type="password" class="form-control" id="login-password" required
+                                               autocomplete="current-password">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary w-100">Войти</button>
+                                </form>
+                            </div>
+
+                            <!-- Форма регистрации -->
+                            <div class="tab-pane fade" id="register-pane" role="tabpanel">
+                                <form id="register-form">
+                                    <div class="mb-3">
+                                        <label for="reg-username" class="form-label">Имя пользователя</label>
+                                        <input type="text" class="form-control" id="reg-username" required
+                                               autocomplete="username">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reg-email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="reg-email" required
+                                               autocomplete="email">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reg-password" class="form-label">Пароль</label>
+                                        <input type="password" class="form-control" id="reg-password" required
+                                               autocomplete="new-password">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reg-confirm-password" class="form-label">Проверка пароля</label>
+                                        <input type="password" class="form-control" id="reg-confirm-password" required
+                                               autocomplete="new-password">
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- jQuery 3.7.1 -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<!-- Bootstrap 5 JS Bundle -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script type="module" src="js/app.js"></script>
+    <!-- 3. Экран задач (располагается под шапкой) -->
+    <div id="tasks-view" class="container pb-5 d-none app-view">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="card-title mb-3">Мои задачи 📝</h5>
+                        <div id="tasks-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Скрипты -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="js/app.js"></script>
 </body>
 </html>

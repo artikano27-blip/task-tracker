@@ -4,6 +4,7 @@ import uuid
 from pydantic import BaseModel, ConfigDict
 
 from app.models import TaskStatus
+from app.schemas.user import UserShortResponse
 
 
 class TaskBase(BaseModel):
@@ -21,7 +22,7 @@ class TaskUpdate(BaseModel):
 class TaskResponse(TaskBase):
     id: uuid.UUID
     timestamp: datetime.datetime
-    author_id: uuid.UUID
+    author: UserShortResponse
     status: TaskStatus
 
     model_config = ConfigDict(from_attributes=True)
