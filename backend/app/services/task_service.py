@@ -20,19 +20,25 @@ class TaskService:
             raise TaskAccessDeniedError
         return task
 
-    async def update_task(self,task_id:uuid.UUID, user_id:uuid.UUID, task_in: TaskUpdate) -> Task:
+    async def update_task(self, task_id: uuid.UUID, user_id: uuid.UUID, task_in: TaskUpdate) -> Task:
         task = await self._get_task_for_user(task_id, user_id)
         return await self.task_repo.update(task, task_in)
 
-    async def delete_task(self, task_id:uuid.UUID, user_id:uuid.UUID) -> None:
+    async def delete_task(self, task_id: uuid.UUID, user_id: uuid.UUID) -> None:
         task = await self._get_task_for_user(task_id, user_id)
         await self.task_repo.delete(task)
 
-    async def get_task(self,task_id: UUID, user_id: UUID) -> Task:
-       return await self._get_task_for_user(task_id, user_id)
+    async def get_task(self, task_id: UUID, user_id: UUID) -> Task:
+        return await self._get_task_for_user(task_id, user_id)
 
     async def get_all_tasks(self, author_id: uuid.UUID) -> Sequence[Task]:
         return await self.task_repo.get_all_by_author(author_id)
 
-    async def create_task(self,author_id: uuid.UUID, task_in:TaskCreate) -> Task:
-        return await self.task_repo.create(author_id, task_in)
+    async def create_task(self, author_id: uuid.UUID, task_in: TaskCreate) -> Task:
+        max_pos = await self.task_repo.get_max_position(task_in.column_id)
+        if max_pos is None:
+            position = 0
+        else:
+            position = max_pos + 1
+
+        return await self.task_repo.create(author_id, position, task_in)
