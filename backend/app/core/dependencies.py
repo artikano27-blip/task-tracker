@@ -21,7 +21,7 @@ async def get_auth_service(
         redis: Annotated[Redis, Depends(get_redis)]
 ) -> AuthService:
     user_repo = UserRepository(db)
-    return AuthService(user_repo, redis)
+    return AuthService(user_repo, redis )
 
 async def get_task_service(
         db: Annotated[AsyncSession, Depends(get_db)]

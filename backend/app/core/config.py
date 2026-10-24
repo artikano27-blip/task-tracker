@@ -15,7 +15,7 @@ class Settings(BaseSettings):
   DATABASE_URL: str = (
       "postgresql+asyncpg://postgres:postgres@localhost:5432/task_db"
   )
-
+  DEFAULT_COLUMNS: tuple[str, ...] = ("К выполнению", "В работе", "Готово")
   # Подключение к Kafka
   # По умолчанию localhost для локального запуска; в Docker переопределится через .env
   KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
