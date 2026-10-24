@@ -1,7 +1,7 @@
 import uuid
 from typing import Sequence
 
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Task
@@ -45,4 +45,22 @@ class TaskRepository:
     async def delete(self, task: Task) -> None:
         await self.db.delete(task)
         await self.db.commit()
+
+    async def shift_from_position(self, column_id: uuid.UUID, from_position: int, step: int):
+        query = (
+            update(Task)
+            .where(Task.column_id == column_id)
+            .where(Task.position >= from_position)
+            .values(position=Task.position + step)
+        )
+        await self.db.execute(query)
+
+    async def shift_range(self, column_id: uuid.UUID, start_pos: int, end_pos: int, step:int):
+        query = (
+            update(Task)
+            .where(Task.column_id == column_id)
+            .where(Task.position.between(start_pos,end_pos))
+            .values(position=Task.position + step)
+        )
+        await self.db.execute(query)
 

@@ -1,5 +1,5 @@
 from app.models.column import Column
-from app.models.task import Task, TaskStatus
+from app.models.task import Task
 from app.models.user import User
 
-__all__ = ["User", "Task", "TaskStatus", "Column"]
+__all__ = ["User", "Task", "Column"]

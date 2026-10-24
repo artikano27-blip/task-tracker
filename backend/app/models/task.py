@@ -10,11 +10,6 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.core.database import Base
 
 
-class TaskStatus(str,Enum):
-    COMPLETED = "ВЫПОЛНЕНА"
-    UNCOMPLETED = "НЕ ВЫПОЛНЕНА"
-
-
 class Task(Base):
     __tablename__ = "tasks"
 
@@ -22,7 +17,7 @@ class Task(Base):
     label_text: Mapped[str] = mapped_column()
     main_text: Mapped[str] = mapped_column()
     position: Mapped[int] = mapped_column(default=0, server_default="0")
-    column_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("columns.id"))
+    column_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("columns.id", ondelete="CASCADE"), nullable=False)
     author_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("users.id"))
     timestamp: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),

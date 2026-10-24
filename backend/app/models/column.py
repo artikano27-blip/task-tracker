@@ -17,4 +17,10 @@ class Column(Base):
     position: Mapped[int] = mapped_column(default=0, server_default="0")
 
     user: Mapped["User"] = relationship(back_populates="columns")
-    tasks: Mapped[list["Task"]] = relationship(back_populates="column")
+    tasks: Mapped[list["Task"]] = relationship(
+        "Task",
+        back_populates="column",
+        order_by="Task.position",
+        cascade="all, delete-orphan",
+        passive_deletes=True
+    )

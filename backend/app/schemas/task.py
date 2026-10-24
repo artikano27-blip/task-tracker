@@ -1,9 +1,7 @@
 import datetime
 import uuid
 
-from pydantic import BaseModel, ConfigDict
-
-from app.models import TaskStatus
+from pydantic import BaseModel, ConfigDict, Field
 from app.schemas.user import UserShortResponse
 
 
@@ -27,3 +25,7 @@ class TaskResponse(TaskBase):
     column_id: uuid.UUID
     position: int
     model_config = ConfigDict(from_attributes=True)
+
+class TaskMove(BaseModel):
+    target_column_id: uuid.UUID
+    new_position: int = Field(ge=0)
