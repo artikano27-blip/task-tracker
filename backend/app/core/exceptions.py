@@ -64,12 +64,12 @@ class TaskAccessDeniedError(AppException):
 class ColumnNotFoundError(AppException):
     status_code = status.HTTP_404_NOT_FOUND
     message = "Service Error: колонка не найдена"
-    code = "TASK_NOT_FOUND"
+    code = "COLUMN_NOT_FOUND"
 
 class ColumnAccessDeniedError(AppException):
     status_code = status.HTTP_403_FORBIDDEN
     message = "Service Error: доступ к ресурсу запрещен"
-    code = "TASK_ACCESS_DENIED"
+    code = "COLUMN_ACCESS_DENIED"
 
 
 

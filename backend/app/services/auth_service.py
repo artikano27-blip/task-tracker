@@ -15,7 +15,6 @@ from app.repositories.user_repository import UserRepository
 from app.schemas import UserCreate
 from app.schemas.token import TokenResponse, TokenPayload, SessionData
 from app.schemas.user import UserLogin
-from app.services.column_service import ColumnService
 
 
 @dataclass
@@ -115,7 +114,6 @@ class AuthService:
             hashed_password=hashed_password,
         )
         created_user = await self.user_repo.create(new_user)
-        await self.column_service.create_default_columns(created_user.id)
         return await self._build_auth_result(created_user)
 
     async def login(self, user_in: UserLogin) -> AuthResult:

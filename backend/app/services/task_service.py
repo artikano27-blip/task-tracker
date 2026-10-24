@@ -37,8 +37,6 @@ class TaskService:
         return await self.task_repo.get_all_by_author(author_id)
 
     async def create_task(self, author_id: uuid.UUID, task_in: TaskCreate) -> Task:
-        await self.column_service.get_column_for_user(task_in.column_id,author_id)
-
         max_pos = await self.task_repo.get_max_position(task_in.column_id)
         if max_pos is None:
             position = 0
@@ -51,7 +49,6 @@ class TaskService:
         task = await self._get_task_for_user(task_id, user_id)
         if task.column_id == task_in.target_column_id and task.position == task_in.new_position:
             return task
-        await self.column_service.get_column_for_user(task_in.target_column_id, user_id)
 
         if task.column_id != task_in.target_column_id:
             await self.task_repo.shift_from_position(task_in.target_column_id,task_in.new_position,1)

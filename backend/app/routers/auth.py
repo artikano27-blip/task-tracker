@@ -3,12 +3,14 @@ from fastapi import APIRouter, Response
 from fastapi.params import Depends
 
 from app.core.cookie import set_auth_cookies, delete_auth_cookies
-from app.core.dependencies import get_auth_service, get_body, get_current_user, get_refresh_token
+from app.core.dependencies import get_auth_service, get_body, get_current_user, get_refresh_token, \
+    get_register_user_use_case
 from app.core.openapi_helpers import dual_body_openapi
 from app.models import User
 from app.schemas import UserCreate, UserResponse
 from app.schemas.user import UserLogin
 from app.services.auth_service import AuthService
+from app.use_cases.register_user import RegisterCase
 
 router = APIRouter(prefix="/auth", tags=["Аутентификация"])
 
@@ -17,9 +19,9 @@ router = APIRouter(prefix="/auth", tags=["Аутентификация"])
 async def register_user(
         user_in: Annotated[UserCreate, Depends(get_body(UserCreate))],
         response: Response,
-        auth_service: Annotated[AuthService, Depends(get_auth_service)],
+        register_case: Annotated[RegisterCase, Depends(get_register_user_use_case)],
 ):
-    auth_result = await auth_service.register(user_in)
+    auth_result = await register_case.execute(user_in)
     set_auth_cookies(response, auth_result.access_token, auth_result.refresh_token)
     return auth_result.user
 

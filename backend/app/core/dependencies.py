@@ -9,10 +9,15 @@ from app.core.database import get_db
 from app.core.exceptions import UnsupportedMediaTypeError, InvalidTokenError
 from app.core.redis import get_redis
 from app.models import User
+from app.repositories.column_repository import ColumnRepository
 from app.repositories.task_repository import TaskRepository
 from app.repositories.user_repository import UserRepository
 from app.services.auth_service import AuthService
+from app.services.column_service import ColumnService
 from app.services.task_service import TaskService
+from app.use_cases.create_task import CreateTaskCase
+from app.use_cases.move_task import MoveTaskCase
+from app.use_cases.register_user import RegisterCase
 
 cookie_scheme = APIKeyCookie(name="access_token", auto_error=False)
 
@@ -29,6 +34,32 @@ async def get_task_service(
     task_repo = TaskRepository(db)
     return TaskService(task_repo)
 
+async def get_column_service(
+        db: Annotated[AsyncSession, Depends(get_db)]
+) -> ColumnService:
+    column_repo = ColumnRepository(db)
+    return ColumnService(column_repo)
+
+
+
+
+def get_register_user_use_case(
+        auth_service: Annotated[AuthService, Depends(get_auth_service)],
+        column_service: Annotated[ColumnService, Depends(get_column_service)]
+) -> RegisterCase:
+    return RegisterCase(auth_service, column_service)
+
+def get_create_task_use_case(
+        task_service: Annotated[TaskService, Depends(get_task_service)],
+        column_service: Annotated[ColumnService, Depends(get_column_service)]
+) -> CreateTaskCase:
+    return CreateTaskCase(task_service, column_service)
+
+def get_move_task_use_case(
+        task_service: Annotated[TaskService, Depends(get_task_service)],
+        column_service: Annotated[ColumnService, Depends(get_column_service)]
+) -> MoveTaskCase:
+    return MoveTaskCase(task_service, column_service)
 
 
 
