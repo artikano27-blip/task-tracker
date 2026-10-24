@@ -6,6 +6,7 @@ from fastapi import APIRouter, Depends, status
 from app.core.dependencies import get_task_service, get_current_user
 from app.models import User
 from app.schemas import TaskResponse, TaskCreate, TaskUpdate
+from app.schemas.task import TaskMove
 from app.services.task_service import TaskService
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
@@ -45,6 +46,15 @@ async def update_task(
         task_service: Annotated[TaskService, Depends(get_task_service)],
 ):
     return await task_service.update_task(task_id, current_user.id, task_in)
+
+@router.patch("/{task_id}/move", response_model=TaskResponse, status_code=200)
+async def move_task(
+        current_user: Annotated[User, Depends(get_current_user)],
+        task_in: TaskMove,
+        task_id: uuid.UUID,
+        task_service: Annotated[TaskService, Depends(get_task_service)],
+):
+    return await task_service.move_task(task_id,current_user.id,task_in)
 
 
 @router.delete("/{task_id}", status_code=204)
