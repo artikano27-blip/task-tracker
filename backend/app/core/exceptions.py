@@ -33,7 +33,7 @@ class InvalidCredentialsError(AppException):
 class InvalidTokenError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
     message = "Auth Service Error: неверный токен"
-    code = "INVALID_TOKEN"
+    code = "TOKEN_INVALID"
 
 class TokenCompromisedError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
@@ -45,6 +45,11 @@ class ExpiredTokenError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
     message = "Auth Service Error: токен просрочен"
     code = "TOKEN_EXPIRED"
+
+class MaxSessionsReachedError(AppException):
+    status_code = status.HTTP_403_FORBIDDEN
+    message = "Auth Service Error: превышено допустимое число устройств"
+    code = "SESSION_MAX_REACHED"
 
 class UnsupportedMediaTypeError(AppException):
     status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
