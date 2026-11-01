@@ -33,7 +33,7 @@ class InvalidCredentialsError(AppException):
 class InvalidTokenError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
     message = "Auth Service Error: неверный токен"
-    code = "INVALID_TOKEN"
+    code = "TOKEN_INVALID"
 
 class TokenCompromisedError(AppException):
     status_code = status.HTTP_401_UNAUTHORIZED
@@ -46,6 +46,11 @@ class ExpiredTokenError(AppException):
     message = "Auth Service Error: токен просрочен"
     code = "TOKEN_EXPIRED"
 
+class MaxSessionsReachedError(AppException):
+    status_code = status.HTTP_403_FORBIDDEN
+    message = "Auth Service Error: превышено допустимое число устройств"
+    code = "SESSION_MAX_REACHED"
+
 class UnsupportedMediaTypeError(AppException):
     status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
     message = "Auth Service Error: неподдерживаемый формат данных"
@@ -53,12 +58,23 @@ class UnsupportedMediaTypeError(AppException):
 
 class TaskNotFoundError(AppException):
     status_code = status.HTTP_404_NOT_FOUND
-    message = "Task Service Error: задача не найдена"
+    message = "Service Error: задача не найдена"
     code = "TASK_NOT_FOUND"
 
 class TaskAccessDeniedError(AppException):
     status_code = status.HTTP_403_FORBIDDEN
-    message = "Task Service Error: доступ к ресурсу запрещен"
+    message = "Service Error: доступ к ресурсу запрещен"
+    code = "TASK_ACCESS_DENIED"
+
+class ColumnNotFoundError(AppException):
+    status_code = status.HTTP_404_NOT_FOUND
+    message = "Service Error: колонка не найдена"
+    code = "COLUMN_NOT_FOUND"
+
+class ColumnAccessDeniedError(AppException):
+    status_code = status.HTTP_403_FORBIDDEN
+    message = "Service Error: доступ к ресурсу запрещен"
+    code = "COLUMN_ACCESS_DENIED"
 
 
 
