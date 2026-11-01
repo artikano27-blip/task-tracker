@@ -30,7 +30,7 @@ class TaskRepository:
     async def create(self, author_id: uuid.UUID, position: int, task_in: TaskCreate) -> Task:
         task = Task(author_id=author_id, label_text=task_in.label_text, main_text=task_in.main_text, column_id=task_in.column_id, position=position)
         self.db.add(task)
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(task)
         return task
 
@@ -38,13 +38,13 @@ class TaskRepository:
         update_data = task_in.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(task, field, value)
-        await self.db.commit()
+        await self.db.flush()
         await self.db.refresh(task)
         return task
 
     async def delete(self, task: Task) -> None:
         await self.db.delete(task)
-        await self.db.commit()
+
 
     async def shift_from_position(self, column_id: uuid.UUID, from_position: int, step: int):
         query = (
