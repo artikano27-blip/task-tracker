@@ -1,7 +1,11 @@
+import uuid
+from typing import Sequence
+
+from app.core.config import settings
 from app.core.exceptions import UserAlreadyExistsError, UserEmailAlreadyExistsError
 from app.core.security import hash_password
 from app.core.unit_of_work import SqlAlchemyUnitOfWork
-from app.models import User
+from app.models import User, Column
 from app.repositories.session_repository import SessionRepository
 from app.schemas import UserCreate
 from app.schemas.token import AuthResult
@@ -12,6 +16,13 @@ class RegisterCase:
     def __init__(self, unit: SqlAlchemyUnitOfWork, session_repo: SessionRepository):
         self.unit = unit
         self.session_repo = session_repo
+
+    async def _create_default_columns(self, user_id: uuid.UUID) -> Sequence[Column]:
+        columns = [
+            Column(title=title, position=idx, user_id=user_id)
+            for idx, title in enumerate(settings.DEFAULT_COLUMNS)
+        ]
+        return await self.unit.columns.create_many(columns)
 
     async def execute(self, user_in: UserCreate) -> AuthResult:
         async with self.unit:
@@ -28,7 +39,7 @@ class RegisterCase:
                 hashed_password=hashed_password,
             )
             created_user = await self.unit.users.create(new_user)
-            await self.unit.columns.create_default_columns(created_user.id)
+            await self._create_default_columns(created_user.id)
 
         auth_result = await build_auth_result(created_user, self.session_repo)
         return auth_result
