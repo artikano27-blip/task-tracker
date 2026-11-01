@@ -1,6 +1,6 @@
 
 import uuid
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.schemas import TaskResponse
 from app.schemas.user import UserShortResponse
@@ -21,3 +21,6 @@ class ColumnResponse(BaseModel):
     position: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class ColumnMove(BaseModel):
+    new_position: int = Field(ge=0)
