@@ -21,7 +21,7 @@ class TaskUpdate(BaseModel):
 class TaskResponse(TaskBase):
     id: uuid.UUID
     timestamp: datetime.datetime
-    author: UserShortResponse
+    author_id: uuid.UUID
     column_id: uuid.UUID
     position: int
     model_config = ConfigDict(from_attributes=True)

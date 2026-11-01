@@ -32,3 +32,5 @@ build-backend = "poetry.core.masonry.api"
 dev = [
     "pytest-asyncio (>=1.4.0,<2.0.0)"
 ]
+[tool.poetry]
+package-mode = false

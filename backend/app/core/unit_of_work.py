@@ -9,7 +9,7 @@ class SqlAlchemyUnitOfWork:
     def __init__(self, session_factory: async_sessionmaker[AsyncSession]) -> None:
         self.session_factory = session_factory
 
-    async def __aenter__(self) -> SqlAlchemyUnitOfWork:
+    async def __aenter__(self) -> "SqlAlchemyUnitOfWork":
         self.session = self.session_factory()
         self.tasks = TaskRepository(self.session)
         self.columns = ColumnRepository(self.session)
