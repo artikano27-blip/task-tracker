@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<!-- Приветствие -->
+<h1 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #172B4D;">
+    Привет, {{ username }}!
+</h1>
+
+<p style="margin: 0 0 20px 0; font-size: 15px; line-height: 1.6; color: #42526E;">
+    Вот твоя персональная аналитическая сводка по задачам за последние 24 часа:
+</p>
+
+<!-- Готовый HTML-блок от ИИ -->
+{{ formatted_content | safe }}
+
+<p style="margin: 0 0 28px 0; font-size: 14px;">
+    <a href="{{ app_url }}" style="color: #0079BF; text-decoration: underline;">Открыть доску задач</a>
+</p>
+{% endblock %}
