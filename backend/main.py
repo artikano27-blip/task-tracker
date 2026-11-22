@@ -6,6 +6,7 @@ from starlette.staticfiles import StaticFiles
 
 from app.routers.auth import router as auth_router
 from app.routers.task import router as task_router
+from app.routers.column import router as column_router
 from app.core.exception_handlers import register_exception_handlers
 from app.core.redis import redis_client
 
@@ -20,6 +21,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Task Tracker", lifespan=lifespan)
 app.include_router(auth_router)
 app.include_router(task_router)
+app.include_router(column_router)
 register_exception_handlers(app)
 
 app.mount("/", StaticFiles(directory="/frontend", html=True), name="frontend")

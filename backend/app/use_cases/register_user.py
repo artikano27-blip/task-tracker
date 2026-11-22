@@ -10,6 +10,7 @@ from app.repositories.session_repository import SessionRepository
 from app.schemas import UserCreate
 from app.schemas.token import AuthResult
 from app.use_cases.auth_helpers import build_auth_result
+from app.tasks.email import send_registration_email
 
 
 class RegisterCase:
@@ -40,6 +41,11 @@ class RegisterCase:
             )
             created_user = await self.unit.users.create(new_user)
             await self._create_default_columns(created_user.id)
+
+        send_registration_email.delay(
+            recipient_email=new_user.email,
+            username=new_user.username
+        )
 
         auth_result = await build_auth_result(created_user, self.session_repo)
         return auth_result

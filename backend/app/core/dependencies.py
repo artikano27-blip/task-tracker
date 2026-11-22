@@ -1,44 +1,44 @@
-
 from typing import Annotated, TypeVar, Type
 from fastapi.params import Depends, Cookie
 from fastapi.security import APIKeyCookie
-
-from app.use_cases.create_column import CreateColumnCase
-from app.use_cases.delete_column import DeleteColumnCase
-from app.use_cases.get_columns import GetColumnsCase
-from app.use_cases.move_column import MoveColumnCase
-from app.use_cases.update_column import UpdateColumnCase
 from redis import Redis
 from starlette.requests import Request
+
 from app.core.exceptions import UnsupportedMediaTypeError, InvalidTokenError
+from app.core.providers import get_uow
 from app.core.redis import get_redis
 from app.core.unit_of_work import SqlAlchemyUnitOfWork
 from app.models import User
 from app.repositories.session_repository import SessionRepository
 from app.use_cases.auth_helpers import parse_token
+from app.use_cases.create_column import CreateColumnCase
 from app.use_cases.create_task import CreateTaskCase
+from app.use_cases.delete_column import DeleteColumnCase
 from app.use_cases.delete_task import DeleteTaskCase
+from app.use_cases.get_columns import GetColumnsCase
 from app.use_cases.get_task import GetTaskCase
 from app.use_cases.get_tasks import GetTasksCase
 from app.use_cases.login_user import LoginCase
 from app.use_cases.logout_user import LogoutCase
+from app.use_cases.move_column import MoveColumnCase
 from app.use_cases.move_task import MoveTaskCase
 from app.use_cases.refresh_token import RefreshTokenCase
 from app.use_cases.register_user import RegisterCase
-from app.core.database import async_session_maker
+from app.use_cases.update_column import UpdateColumnCase
 from app.use_cases.update_task import UpdateTaskCase
 
 cookie_scheme = APIKeyCookie(name="access_token", auto_error=False)
+
 
 def get_session_repo(
     redis: Annotated[Redis, Depends(get_redis)]
 ) -> SessionRepository:
     return SessionRepository(redis)
 
-def get_uow() -> SqlAlchemyUnitOfWork:
-    return SqlAlchemyUnitOfWork(async_session_maker)
 
 T = TypeVar("T")
+
+
 def use_case(case_cls: Type[T]):
     def dependency(uow: Annotated[SqlAlchemyUnitOfWork, Depends(get_uow)]) -> T:
         return case_cls(uow)
