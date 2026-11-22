@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin: 0; padding: 0; background-color: #F4F5F7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #F4F5F7; padding: 40px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="max-width: 580px; background-color: #FFFFFF; border-radius: 6px; box-shadow: 0 1px 3px rgba(9, 30, 66, 0.08);">
+          <tr>
+            <td style="padding: 40px 44px 32px 44px;">
+
+              <!-- Логотип -->
+              <div style="text-align: center; margin-bottom: 32px;">
+                <span style="display: inline-block; background-color: #0079BF; color: #FFFFFF; font-weight: 700; font-size: 16px; width: 28px; height: 28px; line-height: 28px; border-radius: 5px; vertical-align: middle; margin-right: 8px;">T</span>
+                <span style="font-size: 24px; font-weight: 700; color: #172B4D; vertical-align: middle; letter-spacing: -0.5px;">TaskTracker</span>
+              </div>
+
+              <!-- Уникальный контент каждого письма -->
+              {% block content %}{% endblock %}
+
+              <!-- Общая подпись -->
+              <p style="margin: 28px 0 6px 0; font-size: 15px; line-height: 1.6; color: #172B4D;">
+                Продуктивного дня!
+              </p>
+              <p style="margin: 0 0 28px 0; font-size: 15px; font-weight: 600; color: #172B4D;">
+                Команда TaskTracker
+              </p>
+
+              <!-- Нижний баннер -->
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #344563; border-radius: 4px;">
+                <tr>
+                  <td align="center" style="padding: 24px 20px;">
+                    <p style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #FFFFFF; letter-spacing: 0.3px;">
+                      Фокус на главном каждый день
+                    </p>
+                    <p style="margin: 0; font-size: 12px; color: #B3BAC5;">
+                      TaskTracker • Умное управление задачами
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

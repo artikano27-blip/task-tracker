@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600; color: #172B4D;">
+    Добро пожаловать, {{ username }}!
+  </h1>
+
+  <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #172B4D;">
+    Твой аккаунт в <strong>TaskTracker</strong> успешно создан. Теперь ты можешь организовывать задачи на досках, отслеживать прогресс и получать ежедневные аналитические сводки от ИИ.
+  </p>
+
+  <!-- Кнопка входа в приложение -->
+  <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin: 28px 0;">
+    <tr>
+      <td align="center" bgcolor="#0079BF" style="border-radius: 4px;">
+        <a href="{{ app_url }}" target="_blank" style="display: inline-block; padding: 13px 28px; font-size: 15px; font-weight: 600; color: #FFFFFF; text-decoration: none; border-radius: 4px;">
+          Перейти к задачам
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <p style="margin: 0; font-size: 13px; line-height: 1.5; color: #6B778C;">
+    Если ты не создавал аккаунт в TaskTracker, просто проигнорируй это письмо.
+  </p>
+{% endblock %}

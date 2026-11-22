@@ -1,4 +1,3 @@
-import {requestWithAuth} from "./apiClient.js";
 
 const BASE_URL = '/auth';
 
@@ -21,11 +20,17 @@ export function loginUser(credentials) {
 }
 
 export function getUser() {
-    return requestWithAuth(`${BASE_URL}/user`, { method: 'GET' });
+    return $.ajax({
+        url: `${BASE_URL}/user`,
+        method: 'GET'
+    });
 }
 
 export function logoutUser() {
-    return requestWithAuth('/session/', { method: 'POST' });
+    return $.ajax({
+        url: `${BASE_URL}/session`,
+        method: 'DELETE'
+    });
 }
 
 export function sendRefreshTokenRequest() {

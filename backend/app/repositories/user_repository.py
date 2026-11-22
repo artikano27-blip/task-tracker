@@ -1,4 +1,5 @@
 import uuid
+from typing import Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,3 +31,8 @@ class UserRepository:
         await self.db.flush()
         await self.db.refresh(user)
         return user
+
+    async def get_all(self) -> Sequence[uuid.UUID]:
+        query = select(User.id)
+        result = await self.db.execute(query)
+        return result.scalars().all()

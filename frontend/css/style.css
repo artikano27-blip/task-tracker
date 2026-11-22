@@ -1,0 +1,262 @@
+/* 1. Задаем высоту окна на всю страницу */
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden; /* предотвращает вертикальный скролл всей страницы */
+}
+
+/* 2. Контейнер, в котором лежат колонки */
+.board-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start; /* колонки не растягиваются вниз, а остаются компактными */
+
+    height: 100vh;           /* если нет верхней шапки */
+    /* или height: calc(100vh - 60px); если сверху есть навигационная панель / хедер */
+
+    overflow-x: auto;        /* горизонтальный скролл самого контейнера */
+    overflow-y: hidden;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+/* 1. Каркас колонки: жесткий по ширине и высоте */
+.kanban-column {
+    flex: 0 0 auto;
+    width: 280px;
+    max-height: calc(100vh - 120px) !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* 2. Тело колонки: заполняет высоту, но может сжиматься */
+.kanban-column > .card-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+}
+
+/* 3. Список задач: гибкий контейнер со скроллом */
+.tasks-container {
+    display: flex !important;
+    flex-direction: column;
+    flex: 1 1 auto !important; /* Разрешает блоку сжиматься, уступая место форме */
+    min-height: 0 !important;  /* Обязательно для работы flex-shrink */
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+/* 5. Шапка и подвал колонки: строго фиксированный размер */
+.column-header,
+.btn-add-card {
+    flex: 0 0 auto !important;
+    position: relative;
+    z-index: 10; /* Перекрывает карточки при любых конфликтах отрисовки */
+}
+
+.form-add-card {
+    flex: 0 0 auto !important;
+    position: relative;
+    z-index: 10;
+    padding-right: 12px; /*  Компенсирует ширину скроллбара и отступ списка карточек */
+}
+
+/* 4. Карточка задачи: строго фиксированная высота по контенту */
+.task-card {
+    flex: 0 0 auto !important; /* Блокирует сплющивание (эффект гармошки) */
+    position: relative;
+}
+
+/* Для Chrome, Edge, Safari */
+.tasks-container::-webkit-scrollbar {
+    width: 10px; /* тонкая полоса вместо стандартной широкой */
+}
+
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2); /* неяркий бегунок под темную тему */
+    border-radius: 3px;
+}
+
+.tasks-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.35); /* подсветка при наведении */
+}
+
+.card-title-input, #modalCardTitle {
+    resize: none;
+    min-height: 36px;
+    max-height: 175px;           /* фиксирует предел в 8 строк */
+    line-height: 1.4;
+    overflow-y: auto;            /* включает скроллбар только при превышении max-height */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(9, 30, 66, 0.25) transparent;
+}
+
+
+/* Тонкий аккуратный скроллбар внутри поля ввода для Chrome/Edge/Safari */
+.card-title-input::-webkit-scrollbar {
+    width: 5px;
+}
+
+.card-title-input::-webkit-scrollbar-thumb {
+    background-color: rgba(9, 30, 66, 0.25);
+    border-radius: 3px;
+}
+
+/* Карточка, которая физически привязана к курсору в полете */
+.sortable-fallback {
+    opacity: 0.95 !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35) !important;
+    rotate: 3deg;
+    cursor: grabbing !important;
+    pointer-events: none; /* чтобы мышь не спотыкалась об саму себя */
+}
+
+/* Фантомная рамка в колонке, показывающая, куда приземлится карточка */
+.task-ghost {
+    opacity: 0.25 !important;
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border: 2px dashed rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Пустой блок-заглушка на месте перетаскиваемой колонки */
+.column-ghost {
+    background-color: rgba(0, 0, 0, 0.20) !important; /* цвет пустой зоны */
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Скрываем весь текст, карточки и кнопки внутри заглушки */
+.column-ghost * {
+    visibility: hidden !important;
+}
+
+.kanban-column:has(.task-ghost) {
+    border-color: #388bff !important; /* яркая синяя рамка */
+    box-shadow: 0 0 0 1px #388bff !important; /* эффект неонового контура */
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* В обычном состоянии пустой контейнер сжат */
+.tasks-container:empty {
+    min-height: 0;
+    flex-grow: 0;
+    transition: min-height 0.15s ease;
+}
+
+/* Раскрываем зону для броска, только когда над колонкой завис призрак */
+.kanban-column:has(.task-ghost) .tasks-container:empty {
+    min-height: 60px;
+}
+
+.column-header {
+    cursor: grab
+}
+
+.btn-add-card {
+    background-color: transparent !important;
+    border-radius: 6px;
+    padding: 6px 10px; /*  даёт правильную форму плашке вокруг текста */
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn-add-card:hover {
+    background-color: rgba(9, 30, 66, 0.15) !important; /*  плотное серое затемнение */
+    color: #172b4d !important;
+}
+
+/*  Резерв места справа: текст сразу переносится с запасом под кнопки */
+.task-card .card-body {
+    padding-right: 47px !important;
+}
+
+/*  Кнопка-чекбокс (прижата к левому краю, по умолчанию невидима) */
+.task-check-btn {
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    width: 18px;
+    height: 18px;
+    padding: 0;
+    border: 2px solid #8c9bab;
+    border-radius: 50%;
+    background: transparent;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    margin-top: 2px;
+    z-index: 2;
+    transition: opacity 0.43s ease, border-color 0.75s ease, background-color 0.25s ease;
+}
+
+/*  Белая галочка внутри выполненного кружка */
+.task-check-btn::after {
+    content: '';
+    width: 4px;
+    height: 8px;
+    border: solid #ffffff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translate(-1px, -1px);
+    display: none;
+}
+
+/*  Текст задачи: сдвигается без изменения геометрии и ширины строк */
+.task-title {
+    display: inline-block;
+    width: 100%;
+    transition: transform 0.55s ease;
+}
+
+/*  Кнопка удаления справа */
+.btn-delete-task {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    opacity: 0;
+    transition: opacity 0.55s ease;
+    z-index: 2;
+}
+
+/* ===================================================
+    СОСТОЯНИЯ: НАВЕДЕНИЕ (HOVER) И ЗАВЕРШЕНИЕ
+   =================================================== */
+
+/* 1. Появление сервисных кнопок по наведению */
+.task-card:hover .task-check-btn,
+.task-card:hover .btn-delete-task {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.task-check-btn:hover {
+    border-color: #579dff;
+}
+
+/* 2. Плавный сдвиг текста вправо при ховере или если задача завершена */
+.task-card:hover .task-title,
+.task-card.is-completed .task-title {
+    transform: translateX(24px);
+}
+
+/* 3. Оформление завершенной карточки */
+.task-card.is-completed .task-check-btn {
+    opacity: 1;
+    pointer-events: auto;
+    background-color: #61bd4f;
+    border-color: #61bd4f;
+}
+
+.task-card.is-completed .task-check-btn::after {
+    display: block;
+}
+
+.task-card.is-completed .task-title {
+    text-decoration: line-through;
+    opacity: 0.65;
+}
