@@ -5,7 +5,7 @@ from sqlalchemy import select, func, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from app.models import Column, User
+from app.models import Column
 from app.schemas.column import ColumnCreate, ColumnUpdate
 
 
@@ -46,6 +46,8 @@ class ColumnRepository:
         update_data = column_in.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             setattr(column, field, value)
+        await self.db.flush()
+        await self.db.refresh(column)
         return column
 
     async def delete(self, column: Column) -> None:

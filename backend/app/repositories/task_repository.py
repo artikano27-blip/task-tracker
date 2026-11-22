@@ -1,4 +1,6 @@
+
 import uuid
+from datetime import datetime
 from typing import Sequence
 
 from sqlalchemy import select, func, update
@@ -46,7 +48,7 @@ class TaskRepository:
         await self.db.delete(task)
 
 
-    async def shift_from_position(self, column_id: uuid.UUID, from_position: int, step: int):
+    async def shift_from_position(self, column_id: uuid.UUID, from_position: int, step: int) -> None:
         query = (
             update(Task)
             .where(Task.column_id == column_id)
@@ -55,7 +57,7 @@ class TaskRepository:
         )
         await self.db.execute(query)
 
-    async def shift_range(self, column_id: uuid.UUID, start_pos: int, end_pos: int, step:int):
+    async def shift_range(self, column_id: uuid.UUID, start_pos: int, end_pos: int, step:int) -> None:
         query = (
             update(Task)
             .where(Task.column_id == column_id)
@@ -63,4 +65,16 @@ class TaskRepository:
             .values(position=Task.position + step)
         )
         await self.db.execute(query)
+
+    async def daily_task_filter(self, user_id: uuid.UUID, since: datetime) -> Sequence[Task]:
+        filtered_tasks = (
+            select(Task)
+            .where(Task.author_id == user_id)
+            .where(
+                (Task.timestamp >= since) | (Task.updated_at >= since) | (
+                        Task.completed_at >= since))
+        )
+        result = await self.db.execute(filtered_tasks)
+        return result.scalars().all()
+
 

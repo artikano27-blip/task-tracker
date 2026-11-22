@@ -22,5 +22,6 @@ class Column(Base):
         back_populates="column",
         order_by="Task.position",
         cascade="all, delete-orphan",
-        passive_deletes=True
+        passive_deletes=True,
+        lazy="selectin",
     )
