@@ -1,75 +1,32 @@
-// 1. 📦 Импорты API-модулей
-import { getUser, loginUser, registerUser, logoutUser } from './authApi.js';
-import {showError, showUserProfile, showAuthForms, handleSessionExpired, renderTaskList, loadTasks} from "./ui.js";
+//  Инициализация сетевого слоя и интерцептора токенов
+import './api/client.js';
 
-// 2. ⚙️ Глобальная конфигурация сети (до выполнения любых запросов)
-$.ajaxSetup({
-    xhrFields: { withCredentials: true },
-    statusCode: {
-        401: function () {
-            if (!this.url.includes('/auth/session') && !this.url.includes('/auth/login')) {
-                handleSessionExpired();
-            }
-        }
-    }
-});
+//  API и компоненты интерфейса
+import { getUser } from './api/authApi.js';
+import { showUserProfile, showAuthForms } from './components/views.js';
+import { loadBoard } from './components/board.js';
+import { showToast } from './components/toast.js';
 
-$('#login-form').on('submit', async function (event) {
-    event.preventDefault();
-    const data = {
-        username: $('#login-username').val(),
-        password: $('#login-password').val()
-    };
-    try {
-        const user = await loginUser(data);
-        showUserProfile(user);
-        await loadTasks()
-    } catch (error) {
-        const message = error.responseJSON?.message || 'Неверный логин или пароль';
-        showError(message);
-    }
-});
+// 🖱 Обработчики событий
+import { initAuthHandlers } from './handlers/authHandlers.js';
+import { initBoardHandlers } from './handlers/boardHandlers.js';
 
-$('#register-form').on('submit', async function (event) {
-    event.preventDefault();
-    const data = {
-        username: $('#reg-username').val(),
-        email: $('#reg-email').val(),
-        password: $('#reg-password').val()
-    };
-    if ($('#reg-confirm-password').val() !== data.password) {
-        showError('Пароли не совпадают');
-        return;
-    }
-    try {
-        await registerUser(data);
-        const user = await loginUser({ username: data.username, password: data.password });
-        showUserProfile(user);
-    } catch (error) {
-        const message = error.responseJSON?.message || 'Ошибка сервиса аутентификации';
-        showError(message);
-    }
-});
-
-$('#logout-btn').on('click', async function (event) {
-    event.preventDefault();
-    try {
-        await logoutUser();
-        showAuthForms();
-    } catch (error) {
-        const message = error.responseJSON?.message || 'Ошибка сервиса аутентификации';
-        showError(message);
-    }
-});
-
+//  Проверка сессии при запуске приложения
 async function checkAuth() {
     try {
         const user = await getUser();
         showUserProfile(user);
-        await loadTasks();
+        await loadBoard();
     } catch (error) {
+        const message = error.responseJSON?.message || 'Ошибка аутентификации, повторите вход';
+        showToast(message);
         showAuthForms();
     }
 }
 
-$(checkAuth);
+//  Запуск приложения после готовности DOM-дерева
+$(() => {
+    initAuthHandlers();
+    initBoardHandlers();
+    checkAuth();
+});
